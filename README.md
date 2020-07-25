@@ -6,12 +6,13 @@
 # ASUS-B85M-G-Hackintosh (Haswell)
 Goal of this repo is to run Mac os on B85M-G
 
-macOS Catalina 10.15.6            |  macOS Big Su 11.0(Beta)
+macOS Catalina 10.15.6            |  macOS Big Sur 11.0(Beta)
 :-------------------------:|:-------------------------:
-![alt text](assets/Screenshots/10.15.x/10.15.6/about.png)  |  ![alt text](assets/Screenshots/10.15.x/10.15.6/about.png)
+![alt text](assets/Screenshots/10.15.x/10.15.6/about.png)  |  ![alt text](assets/Screenshots/11.0.x/11.0.beta2/about.png)
 
 
 ## About this Build
+If you like this project don't forget to donate this so I can buy RX 570 👍🏽 
 
 ## Hardware Info 💻
 
