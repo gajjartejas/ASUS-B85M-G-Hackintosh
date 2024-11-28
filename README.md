@@ -6,9 +6,9 @@
 
 Goal of this repo is to run Mac os on ASUS B85M-G.
 
-|         macOS Catalina 10.15.6         |           macOS Big Sur 11.2.3            |                 macOS Ventura 13.3.1                  |
-| :------------------------------------: | :---------------------------------------: | :---------------------------------------------------: |
-| ![alt text](10.15.x/10.15.6/about.png) | ![alt text](11.0.x/11.2.3/screenshot.png) | ![alt text](13.x/13.3.1/about.png) |
+|         macOS Catalina 10.15.6         |           macOS Big Sur 11.2.3            |        macOS Ventura 13.3.1        |          macOS Ventura 14.7.1           |
+| :------------------------------------: | :---------------------------------------: | :--------------------------------: | :-------------------------------------: |
+| ![alt text](10.15.x/10.15.6/about.png) | ![alt text](11.0.x/11.2.3/screenshot.png) | ![alt text](13.x/13.3.1/about.png) | ![alt text](14.x/14.7.1/screenshot.png) |
 
 ## Hardware Info 💻
 
@@ -32,7 +32,6 @@ Goal of this repo is to run Mac os on ASUS B85M-G.
 | [WiFi Card M.2 Card](https://www.aliexpress.com/item/4000329990755.html?spm=a2g0s.9042311.0.0.2cb24c4dnm2Qqt)           | BCM94360CS2 Wireless WIFI Bluetooth 4.0 Airport Card For Macbook Air 11" A1465 13" A1466 2013 MD711LL/A MD760 BCM94360CS2AX | Working |
 | [NGFF M2 to PCIE AC Converter](https://www.aliexpress.com/item/4001028183672.html?spm=a2g0s.9042311.0.0.35844c4doSjGdi) |                        WTXUP NGFF M2 to PCIE AC Converter Adapter Card AX200 9260 8265 1650A for PC                         | Working |
 | Graphics Card                                                                                                           |                                                     NITRO+ RX 580 8G G5                                                     | Working |
-
 
 ## Important Note
 
@@ -63,7 +62,6 @@ Kernel -> Add -> Enable -> `RtWlanDisk.kext`
 Kernel -> Add -> Enable -> `RtWlanU.kext`
 Kernel -> Add -> Enable -> `RtWlanU1827.kext`
 
-
 ## Software Status 👨‍💻
 
 | Type            | Spec | Status  |
@@ -84,8 +82,8 @@ Kernel -> Add -> Enable -> `RtWlanU1827.kext`
 | AppleALC.kext       | For Audio                                                                                                                                                                             |
 | FeatureUnlock.kext  | Add Sidecar support to unsupported models                                                                                                                                             |
 | RealtekRTL8111.kext | OS X open source driver for the Realtek RTL8111/8168 family                                                                                                                           |
-| USBInjectAll.kext   | Kext to inject all USB ports for the installed Intel EHCI/XHCI chipset automatically.                                                                                                 |
-| HoRNDIS.kext        | Android USB tethering driver for Mac OS X                                                                                                                                             |
+| HoRNDIS.kext        | macOS USB mapping                                                                                                                                                                     |
+| USBToolBox.kext     | macOS USB mapping                                                                                                                                                                     |
 | RtWlanU.kext        | USB WiFi Adaptor                                                                                                                                                                      |
 | RtWlanU1827.kext    | USB WiFi Adaptor                                                                                                                                                                      |
 
@@ -106,7 +104,7 @@ Kernel -> Add -> Enable -> `RtWlanU1827.kext`
 | Buy RX 580 or RX 570                      | Done   |
 | Check LAN Working or Not                  | Done   |
 | HDMI Audio Not Working when using HD 4400 | NA     |
-| USB mapping tutorial                      | NA     |
+| USB mapping tutorial                      | Done   |
 | OpenCore Guide                            | NA     |
 
 ### Telegram Channel
@@ -127,4 +125,3 @@ Kernel -> Add -> Enable -> `RtWlanU1827.kext`
 - [al3xtjames](https://github.com/al3xtjames) for clover-theme-oss theme.
 - [ImmersiveX](https://github.com/ImmersiveX) for clover-theme-minimal-dark theme.
 - And anyone else that helped to develop and improve hackintoshing.
-- me
