@@ -2,9 +2,9 @@
 [<img align="right" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/twitter.svg" width="50" height="50" />](http://www.twitter.com/gajjartejas)
 [<img align="right" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/reddit.svg" width="50" height="50" />](http://www.reddit.com/u/gajjartejas)
 
-# ASUS-B85M-G-Hackintosh (4th Generation - Haswell)
+# ASUS-B85M-G-Hackintosh (4th Generation Intel Haswell)
 
-Goal of this repo is to run macOS on the ASUS B85M-G motherboard with OpenCore bootloader.
+Goal of this repository is to run macOS on the ASUS B85M-G motherboard powered by a 4th Generation Intel Haswell processor and OpenCore bootloader.
 
 |         macOS Catalina 10.15.6         |           macOS Big Sur 11.2.3            |        macOS Ventura 13.3.1        |          macOS Sonoma 14.7.1           |              macOS 26.6.1               |
 | :------------------------------------: | :---------------------------------------: | :--------------------------------: | :------------------------------------: | :-------------------------------------: |
@@ -12,96 +12,93 @@ Goal of this repo is to run macOS on the ASUS B85M-G motherboard with OpenCore b
 
 ## Hardware Info 💻
 
-| Type         |                               Spec                                |  Status | Link                                                                                                     |
-| ------------ | :---------------------------------------------------------------: | ------: | -------------------------------------------------------------------------------------------------------- |
-| Motherboard  |                  ASUS B85M-G (mATX Form Factor)                   | Working | -                                                                                                        |
-| BIOS Version |                         B85M-G BIOS 3602                          | Working | -                                                                                                        |
-| CPU          |         Intel® Core™ i5-4590 Processor @ 3.30GHz (4-Core)         | Working | -                                                                                                        |
-| Chipset      |                            Intel® B85                             | Working | -                                                                                                        |
-| Memory       |                        28 GB 1600 MHz DDR3                        | Working | -                                                                                                        |
-| Graphics     |                     AMD Radeon RX 6600 XT 8GB                     | Working | [NootRX](https://github.com/ChefKissInc/NootRX)                                                          |
-| Audio        | Realtek® ALC887-VD2 8-Channel High Definition Audio + HDMI Audio  | Working | [AppleALC](https://github.com/acidanthera/AppleALC/wiki/Installation-and-usage)                         |
-| Ethernet     |            Realtek® RTL8111G Gigabit LAN Controller(s)            | Working | -                                                                                                        |
-| SMBIOS       |                             MacPro7,1                             | Working | -                                                                                                        |
+| Component          | Specification                                                                                                 |  Status | Link / Resource                                                                                         |
+| ------------------ | :------------------------------------------------------------------------------------------------------------ | ------: | ------------------------------------------------------------------------------------------------------- |
+| Motherboard        | ASUS B85M-G (mATX Form Factor)                                                                                | Working | [ASUS B85M-G](https://www.asus.com/motherboards-components/motherboards/others/b85mg/)                   |
+| BIOS Version       | B85M-G BIOS 3602                                                                                              | Working | [ASUS BIOS](https://www.asus.com/motherboards-components/motherboards/others/b85mg/helpdesk_bios/)       |
+| CPU                | Intel® Core™ i5-4590 Processor (4th Gen Haswell, 4 Cores / 4 Threads @ 3.30GHz, Turbo up to 3.70GHz, 6MB L3) | Working | [Intel Ark](https://www.intel.com/content/www/us/en/products/sku/80815/intel-core-i54590-processor-6m-cache-up-to-3-70-ghz/specifications.html) |
+| Chipset            | Intel® B85 Express Chipset                                                                                    | Working | -                                                                                                       |
+| Memory (RAM)       | 28 GB 1600 MHz DDR3 (2x8GB Hynix + 1x8GB Corsair + 1x4GB Transcend)                                          | Working | -                                                                                                       |
+| Dedicated GPU      | AMD Radeon RX 6600 XT 8GB GDDR6 (Navi 23, Metal 3 Full Hardware Acceleration)                                  | Working | [NootRX](https://github.com/ChefKissInc/NootRX)                                                         |
+| Integrated GPU     | Intel® HD Graphics 4600 (Haswell GT2)                                                                         | Legacy  | [Dortania Framebuffer Guide](https://dortania.github.io/OpenCore-Post-Install/gpu-patching/intel-patching/) |
+| Audio Codec        | Realtek® ALC887-VD2 8-Channel High Definition Audio + HDMI Audio (via RX 6600 XT)                             | Working | [AppleALC](https://github.com/acidanthera/AppleALC/wiki/Installation-and-usage)                        |
+| Ethernet (LAN)     | Realtek® RTL8111G PCIe Gigabit LAN Controller (`en0`)                                                         | Working | [RealtekRTL8111](https://github.com/Mieze/RTL8111_driver_for_OS_X)                                      |
+| Storage (Primary)  | Samsung SSD 860 EVO 500GB (SATA SSD - macOS APFS)                                                             | Working | -                                                                                                       |
+| Storage (Secondary)| Western Digital WD10EZRX 1TB (SATA HDD)                                                                       | Working | -                                                                                                       |
+| SMBIOS Profile     | `MacPro7,1`                                                                                                   | Working | -                                                                                                       |
+| OpenCore Version   | OpenCore 1.0.7 (REL-107-2026-03-20)                                                                           | Working | [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg)                                              |
 
-## Extensions 🔨
+## Network & Connectivity 🔨
 
-| Type                                                                                                                    |                                                            Spec                                                             | Status  |
-| ----------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: | ------- |
-| Graphics Card (Current)                                                                                                 |                                                  AMD Radeon RX 6600 XT 8GB                                                  | Working |
-| Graphics Card (Alternative)                                                                                             |                                                     NITRO+ RX 580 8G G5                                                     | Working |
-| [USB WiFi Adaptor](https://www.aliexpress.com/item/33059242651.html)                                                    |                      802.11AC NIC Realtek USB Adaptor Dual Band: Alternative 11AC(5.8G) and 11N(2.4G)                       | Working |
-| [WiFi Card M.2 Card](https://www.aliexpress.com/item/4000329990755.html?spm=a2g0s.9042311.0.0.2cb24c4dnm2Qqt)           | BCM94360CS2 Wireless WIFI Bluetooth 4.0 Airport Card For Macbook Air 11" A1465 13" A1466 2013 MD711LL/A MD760 BCM94360CS2AX | Working |
-| [NGFF M2 to PCIE AC Converter](https://www.aliexpress.com/item/4001028183672.html?spm=a2g0s.9042311.0.0.35844c4doSjGdi) |                        WTXUP NGFF M2 to PCIE AC Converter Adapter Card AX200 9260 8265 1650A for PC                         | Working |
+| Interface          | Hardware / Specification                                                                                     | Status  | Driver / Kext                                      |
+| ------------------ | :----------------------------------------------------------------------------------------------------------- | :-----: | :------------------------------------------------- |
+| Gigabit Ethernet   | Realtek RTL8111G Gigabit LAN (`en0`)                                                                         | Working | `RealtekRTL8111.kext`                              |
+| USB Wi-Fi Adaptor  | Realtek 802.11ac NIC Dual Band USB Adapter (`en4`)                                                           | Working | `RtWlanU.kext` / `RtWlanU1827.kext`                |
+| Bluetooth          | Realtek Bluetooth USB Dongle (UART/USB)                                                                      | Working | `RTLBluetoothFirmware.kext` + `BlueToolFixup.kext` |
+| Android Tethering  | USB Network Tethering (OnePlus 12, Redmi Pad)                                                                | Working | `HoRNDIS.kext`                                     |
 
-## Important Notes ⚠️
+## Important Setup Notes ⚠️
 
-### Intel HD4400 Graphics [Not supported on macOS Ventura and Newer]
+### Integrated vs Dedicated GPU
+- **AMD Radeon RX 6600 XT (Current Primary)**: Full Metal 3 hardware acceleration and display output over HDMI/DisplayPort using `NootRX.kext` with SMBIOS `MacPro7,1`.
+- **Intel HD Graphics 4600 (Integrated)**: Native support existed up to macOS Monterey 12.x. On macOS Ventura, Sonoma, and newer versions, Haswell integrated graphics (HD4600/HD4400) are officially unsupported by Apple. It is recommended to disable Intel integrated graphics in BIOS or use a dedicated compatible GPU (such as AMD RX 6600 XT or Polaris RX 570/580).
 
-Intel HD 4400 integrated graphics is deprecated and unsupported on newer macOS versions (macOS Ventura, Sonoma, and above). If running modern macOS, please disable Intel HD 4400 in the BIOS and use a compatible dedicated GPU (such as AMD RX 6600 XT via `NootRX.kext` or AMD Polaris RX 570 / RX 580 via `WhateverGreen.kext`).
-
-If running legacy macOS with HD4400:
-- Kernel -> Add -> Enable -> `WhateverGreen.kext`
-- DeviceProperties -> Add `PciRoot(0x0)/Pci(0x2,0x0)` framebuffer patches.
-
-### Dedicated GPU Configuration (RX 6600 XT)
-
-When using Navi 23 GPUs such as AMD Radeon RX 6600 XT:
-- Use `NootRX.kext` (do not load `WhateverGreen.kext` concurrently).
-- SMBIOS `MacPro7,1` is recommended for optimal GPU power management and performance.
+### USB Port Mapping
+All USB 2.0 and 3.0 ports on the ASUS B85M-G motherboard are mapped using `USBToolBox` and `UTBMap.kext`.
 
 ### Custom Serialization
-
-Before booting, make sure to generate and add your own unique serials to `config.plist`:
+Remember to generate and configure your unique SMBIOS identifiers before connecting to Apple ID / iCloud services:
 - `PlatformInfo.Generic.SystemSerialNumber`
 - `PlatformInfo.Generic.SystemUUID`
 - `PlatformInfo.Generic.MLB`
 - `PlatformInfo.Generic.ROM`
 
-## Software Status 👨‍💻
+## Software & Feature Status 👨‍💻
 
-| Feature                | Status  | Notes                                                   |
-| ---------------------- | :-----: | ------------------------------------------------------- |
-| Graphics Acceleration  | Working | Metal 3 full hardware acceleration with RX 6600 XT      |
-| Onboard & HDMI Audio   | Working | Realtek ALC887 + HDMI Audio Output                      |
-| Gigabit Ethernet (LAN) | Working | Realtek RTL8111G (en0)                                  |
-| USB 2.0 & USB 3.0      | Working | Fully mapped via USBToolBox (`UTBMap.kext`)             |
-| Bluetooth              | Working | RTL Bluetooth Firmware + BlueToolFixup                  |
-| Sleep / Wake           | Working | Native power management with HibernationFixup           |
-| App Store & Services   | Working | Requires unique SMBIOS serials                          |
+| Feature                     | Status  | Notes                                                   |
+| --------------------------- | :-----: | ------------------------------------------------------- |
+| Full Graphics Acceleration  | Working | Metal 3 enabled on AMD Radeon RX 6600 XT 8GB            |
+| Audio (Onboard & HDMI)      | Working | Realtek ALC887 + HDMI Audio on LG FHD 1080p @ 120Hz     |
+| Gigabit Ethernet (LAN)      | Working | Realtek RTL8111G (`en0`)                                |
+| USB 2.0 & USB 3.0 Ports     | Working | Fully mapped via `USBToolBox` + `UTBMap.kext`           |
+| Bluetooth & Wireless Audio  | Working | Realtek Bluetooth with firmware uploader                |
+| Wi-Fi (USB Adapter)         | Working | Realtek 802.11ac Wireless                               |
+| Android USB Tethering       | Working | Via `HoRNDIS.kext`                                      |
+| Sleep & Wake                | Working | Native power management with `HibernationFixup.kext`    |
+| App Store & Apple Services  | Working | Requires custom SMBIOS serials                          |
 
 ### Kexts Used
 
-| Kext                     | Info                                                                                                                                                                                  |
-| ------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Lilu.kext                | Arbitrary kext and process patching engine for macOS                                                                                                                                  |
-| VirtualSMC.kext          | SMC Emulator Layer                                                                                                                                                                    |
-| SMCProcessor.kext        | Processor Temperature Monitoring                                                                                                                                                      |
-| SMCSuperIO.kext          | Fan and Sensor Reading                                                                                                                                                                |
-| NootRX.kext              | Open-source kernel extension for AMD RDNA2 dGPUs (Navi 23 / RX 6600 / RX 6600 XT)                                                                                                     |
-| WhateverGreen.kext       | Various patches necessary for ATI/AMD Polaris/Intel/Nvidia GPUs (Alternative GPU setups)                                                                                              |
-| AppleALC.kext            | Native macOS HD audio codec patching (Realtek ALC887)                                                                                                                                |
-| AMFIPass.kext            | Allows AMFI to remain enabled while supporting root patch requirements                                                                                                                |
-| RestrictEvents.kext      | Lilu Kernel extension for suppressing unwanted system popups and unlocking hardware-restricted features                                                                               |
-| FeatureUnlock.kext       | Adds Sidecar, AirPlay, and Night Shift support to unsupported SMBIOS models                                                                                                           |
-| RealtekRTL8111.kext      | Open-source macOS driver for Realtek RTL8111/8168 family Gigabit LAN                                                                                                                  |
-| BlueToolFixup.kext       | Bluetooth stack fixup for macOS Monterey and newer                                                                                                                                   |
-| RTLBluetoothFirmware.kext| Realtek Bluetooth firmware uploader                                                                                                                                                   |
-| HibernationFixup.kext    | Resolves sleep and hibernation issues                                                                                                                                                 |
-| USBToolBox.kext          | USB mapping companion kext                                                                                                                                                            |
-| UTBMap.kext              | Custom USB port map for ASUS B85M-G                                                                                                                                                   |
-| HoRNDIS.kext             | USB network driver for Android USB tethering                                                                                                                                          |
-| RtWlanU.kext             | Realtek USB WiFi Adapter driver                                                                                                                                                       |
-| RtWlanU1827.kext         | Realtek USB WiFi Adapter driver                                                                                                                                                       |
+| Kext                      | Description                                                                                                            |
+| ------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| Lilu.kext                 | Arbitrary kext and process patching engine for macOS                                                                   |
+| VirtualSMC.kext           | SMC Emulator Layer                                                                                                     |
+| SMCProcessor.kext         | Processor Temperature Monitoring                                                                                       |
+| SMCSuperIO.kext           | Fan and Sensor Reading                                                                                                 |
+| NootRX.kext               | Open-source kernel extension for AMD RDNA2 dGPUs (Navi 23 / RX 6600 / RX 6600 XT)                                      |
+| WhateverGreen.kext        | Graphics patches for ATI/AMD Polaris/Intel/Nvidia GPUs (alternative configurations)                                    |
+| AppleALC.kext             | Native macOS HD audio codec patching for Realtek ALC887                                                                |
+| AMFIPass.kext             | Allows AMFI to remain enabled while supporting root patch requirements                                                 |
+| RestrictEvents.kext       | Blocks unsupported process checks and unlocks hardware features                                                       |
+| FeatureUnlock.kext        | Adds Sidecar, AirPlay, and Night Shift support                                                                         |
+| RealtekRTL8111.kext       | Open-source macOS driver for Realtek RTL8111/8168 family Gigabit LAN                                                   |
+| BlueToolFixup.kext        | Bluetooth stack fixup for modern macOS releases                                                                        |
+| RTLBluetoothFirmware.kext | Realtek Bluetooth firmware uploader                                                                                    |
+| HibernationFixup.kext     | Resolves sleep and hibernation issues                                                                                  |
+| USBToolBox.kext           | USB mapping companion kext                                                                                             |
+| UTBMap.kext               | Custom USB port map for ASUS B85M-G                                                                                    |
+| HoRNDIS.kext              | USB network driver for Android USB tethering                                                                           |
+| RtWlanU.kext              | Realtek USB WiFi Adapter driver                                                                                        |
+| RtWlanU1827.kext          | Realtek USB WiFi Adapter driver                                                                                        |
 
 ### SSDTs Used
 
-| SSDT                | Info                                                                                                                                |
-| :------------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
-| SSDT-EC.aml         | Embedded Controller fix for Haswell desktops ([Dortania Guide](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-methods/prebuilt.html#wrapping-up)) |
-| SSDT-PLUG.aml       | Native CPU power management plugin injection ([Dortania Guide](https://dortania.github.io/Getting-Started-With-ACPI/ssdt-methods/ssdt-prebuilt.html#desktop-haswell-and-broadwell)) |
-| SSDT-SBUS-MCHC.aml  | Fixes SMBus and System Management Bus support for Haswell platforms                                                                |
-| SSDT-USBX.aml       | USB power supply property injections for macOS                                                                                      |
+| SSDT               | Description                                                                                                                            |
+| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| SSDT-EC.aml        | Embedded Controller fix for 4th Gen Haswell desktops ([Dortania Guide](https://dortania.github.io/Getting-Started-With-ACPI/Universal/ec-methods/prebuilt.html#wrapping-up)) |
+| SSDT-PLUG.aml      | Native CPU power management plugin injection ([Dortania Guide](https://dortania.github.io/Getting-Started-With-ACPI/ssdt-methods/ssdt-prebuilt.html#desktop-haswell-and-broadwell)) |
+| SSDT-SBUS-MCHC.aml | Fixes SMBus and System Management Bus support for Haswell platforms                                                                    |
+| SSDT-USBX.aml      | USB power supply property injections for macOS                                                                                         |
 
 ### Credits
 
