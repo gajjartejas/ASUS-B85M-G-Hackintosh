@@ -1,35 +1,38 @@
-
 # Tools
 
 ### extract_efi_without_serial.sh
 
-Use script to extract your OpenCore folder without `SystemSerialNumber`, `SystemUUID` and `MLB`.
+Use this script to extract and package your OpenCore `OC` folder into a zip archive while sanitizing private identifiers (`SystemSerialNumber`, `SystemUUID`, `MLB`, `ROM`, and `SMBIOS` serial keys).
 
-Uses:
-First get the name of your EFI partition.
+#### Usage:
 
+1. **Direct Path (Recommended)**:
+```bash
+./Tools/extract_efi_without_serial.sh /path/to/OC
 ```
+
+2. **Mounted EFI Partition**:
+```bash
+# First identify your EFI partition (e.g., /dev/disk0s1)
 diskutil list
+
+# Run the extraction script with the device path:
+./Tools/extract_efi_without_serial.sh /dev/disk0s1
 ```
 
-Go to `extract_efi_without_serial.sh` directory.
-`First Argument($1)` =  `Device path` = `/dev/disk0s1`
-`Second Argument($2)` = `Device name + OC Folder path` = `/Volumes/ESP/EFI/OC`
-
-```
-./extract_efi_without_serial.sh /dev/disk0s1  /Volumes/ESP/EFI/OC
-
-OR 
-
-./extract_efi_without_serial.sh /dev/disk0s1  /Volumes/EFI/EFI/OC
+3. **Auto-Detection**:
+If no argument is passed, the script checks `/Volumes/EFI/EFI/OC` or `../OC`.
+```bash
+./Tools/extract_efi_without_serial.sh
 ```
 
-This will output the zip of the OpenCore folder.
+#### Output:
+The script automatically reads the OpenCore version and release date from NVRAM (or timestamp) to generate the archive:
 ```
-OC_OpenCoreVersion_ReleaseDate.zip
+Tools/OC_<OpenCoreVersion>_<ReleaseDate>.zip
 ```
 
 Example:
 ```
-OC_063_2020_11_02.zip
+Tools/OC_107_2026_03_20.zip
 ```
