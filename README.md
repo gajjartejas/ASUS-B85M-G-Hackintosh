@@ -30,18 +30,32 @@ Goal of this repository is to run macOS on the ASUS B85M-G motherboard powered b
 
 ## Network & Connectivity 🔨
 
-| Interface          | Hardware / Specification                                                                                     | Status  | Driver / Kext                                      |
-| ------------------ | :----------------------------------------------------------------------------------------------------------- | :-----: | :------------------------------------------------- |
-| Gigabit Ethernet   | Realtek RTL8111G Gigabit LAN (`en0`)                                                                         | Working | `RealtekRTL8111.kext`                              |
-| USB Wi-Fi Adaptor  | Realtek 802.11ac NIC Dual Band USB Adapter (`en4`)                                                           | Working | `RtWlanU.kext` / `RtWlanU1827.kext`                |
-| Bluetooth          | Realtek Bluetooth USB Dongle (UART/USB)                                                                      | Working | `RTLBluetoothFirmware.kext` + `BlueToolFixup.kext` |
-| Android Tethering  | USB Network Tethering (OnePlus 12, Redmi Pad)                                                                | Working | `HoRNDIS.kext`                                     |
+| Interface              | Hardware / Specification                                                                                     | Status  | Driver / Kext                                      |
+| ---------------------- | :----------------------------------------------------------------------------------------------------------- | :-----: | :------------------------------------------------- |
+| Gigabit Ethernet       | Realtek RTL8111G Gigabit LAN (`en0`)                                                                         | Working | `RealtekRTL8111.kext`                              |
+| USB Bluetooth Adapter  | Realtek Bluetooth 5.4 Radio USB Adapter (RTL8761BU, Vendor: `0x0BDA`, Product: `0xA728`)                      | Working | `RTLBluetoothFirmware.kext` + `BlueToolFixup.kext` |
+| USB Wi-Fi Adapter      | Realtek 802.11ac NIC Dual Band USB Adapter (`en4`)                                                           | Working | `RtWlanU.kext` / `RtWlanU1827.kext`                |
+| Android Tethering      | USB Network Tethering (OnePlus 12, Redmi Pad)                                                                | Working | `HoRNDIS.kext`                                     |
+
+## Extensions & Peripherals 🔌
+
+| Type                                                                                                                    |                                                            Spec                                                             | Status  | Link / Details                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: | :-----: | ------------------------------------------------------------------------------------------------------------------------------- |
+| Graphics Card (Current)                                                                                                 |                                                  AMD Radeon RX 6600 XT 8GB                                                  | Working | [NootRX](https://github.com/ChefKissInc/NootRX)                                                                                 |
+| Graphics Card (Alternative)                                                                                             |                                                     NITRO+ RX 580 8G G5                                                     | Working | [WhateverGreen](https://github.com/acidanthera/WhateverGreen)                                                                   |
+| [USB Bluetooth Adapter](https://github.com/zhen-zen/RTLBluetoothFirmware)                                                |                           Realtek Bluetooth 5.4 Radio USB Dongle (RTL8761B / RTL8761BU Chipset)                             | Working | [RTLBluetoothFirmware](https://github.com/zhen-zen/RTLBluetoothFirmware)                                                         |
+| [USB WiFi Adapter](https://www.aliexpress.com/item/33059242651.html)                                                    |                      802.11AC NIC Realtek USB Adaptor Dual Band: Alternative 11AC(5.8G) and 11N(2.4G)                       | Working | [Wireless-USB-Adapter](https://github.com/chris1111/Wireless-USB-Adapter-OC-Big-Sur-Fix)                                        |
+| [WiFi Card M.2 Card](https://www.aliexpress.com/item/4000329990755.html?spm=a2g0s.9042311.0.0.2cb24c4dnm2Qqt)           | BCM94360CS2 Wireless WIFI Bluetooth 4.0 Airport Card For Macbook Air 11" A1465 13" A1466 2013 MD711LL/A MD760 BCM94360CS2AX | Working | -                                                                                                                               |
+| [NGFF M2 to PCIE AC Converter](https://www.aliexpress.com/item/4001028183672.html?spm=a2g0s.9042311.0.0.35844c4doSjGdi) |                        WTXUP NGFF M2 to PCIE AC Converter Adapter Card AX200 9260 8265 1650A for PC                         | Working | -                                                                                                                               |
 
 ## Important Setup Notes ⚠️
 
 ### Integrated vs Dedicated GPU
 - **AMD Radeon RX 6600 XT (Current Primary)**: Full Metal 3 hardware acceleration and display output over HDMI/DisplayPort using `NootRX.kext` with SMBIOS `MacPro7,1`.
 - **Intel HD Graphics 4600 (Integrated)**: Native support existed up to macOS Monterey 12.x. On macOS Ventura, Sonoma, and newer versions, Haswell integrated graphics (HD4600/HD4400) are officially unsupported by Apple. It is recommended to disable Intel integrated graphics in BIOS or use a dedicated compatible GPU (such as AMD RX 6600 XT or Polaris RX 570/580).
+
+### Bluetooth Configuration
+The Realtek Bluetooth 5.4 USB adapter works natively with the macOS Bluetooth daemon and audio subsystem using `RTLBluetoothFirmware.kext` (which uploads the firmware to the Realtek dongle on boot) and `BlueToolFixup.kext` (to handle Monterey/Ventura/Sonoma/newer Bluetooth stack requirements).
 
 ### USB Port Mapping
 All USB 2.0 and 3.0 ports on the ASUS B85M-G motherboard are mapped using `USBToolBox` and `UTBMap.kext`.
@@ -55,17 +69,17 @@ Remember to generate and configure your unique SMBIOS identifiers before connect
 
 ## Software & Feature Status 👨‍💻
 
-| Feature                     | Status  | Notes                                                   |
-| --------------------------- | :-----: | ------------------------------------------------------- |
-| Full Graphics Acceleration  | Working | Metal 3 enabled on AMD Radeon RX 6600 XT 8GB            |
-| Audio (Onboard & HDMI)      | Working | Realtek ALC887 + HDMI Audio on LG FHD 1080p @ 120Hz     |
-| Gigabit Ethernet (LAN)      | Working | Realtek RTL8111G (`en0`)                                |
-| USB 2.0 & USB 3.0 Ports     | Working | Fully mapped via `USBToolBox` + `UTBMap.kext`           |
-| Bluetooth & Wireless Audio  | Working | Realtek Bluetooth with firmware uploader                |
-| Wi-Fi (USB Adapter)         | Working | Realtek 802.11ac Wireless                               |
-| Android USB Tethering       | Working | Via `HoRNDIS.kext`                                      |
-| Sleep & Wake                | Working | Native power management with `HibernationFixup.kext`    |
-| App Store & Apple Services  | Working | Requires custom SMBIOS serials                          |
+| Feature                     | Status  | Notes                                                                      |
+| --------------------------- | :-----: | -------------------------------------------------------------------------- |
+| Full Graphics Acceleration  | Working | Metal 3 enabled on AMD Radeon RX 6600 XT 8GB                               |
+| Audio (Onboard & HDMI)      | Working | Realtek ALC887 + HDMI Audio on LG FHD 1080p @ 120Hz                        |
+| Gigabit Ethernet (LAN)      | Working | Realtek RTL8111G (`en0`)                                                   |
+| USB 2.0 & USB 3.0 Ports     | Working | Fully mapped via `USBToolBox` + `UTBMap.kext`                              |
+| Bluetooth & Wireless Audio  | Working | Realtek Bluetooth 5.4 USB (`RTLBluetoothFirmware.kext` + `BlueToolFixup`) |
+| Wi-Fi (USB Adapter)         | Working | Realtek 802.11ac Wireless                                                  |
+| Android USB Tethering       | Working | Via `HoRNDIS.kext`                                                         |
+| Sleep & Wake                | Working | Native power management with `HibernationFixup.kext`                       |
+| App Store & Apple Services  | Working | Requires custom SMBIOS serials                                             |
 
 ### Kexts Used
 
@@ -83,7 +97,7 @@ Remember to generate and configure your unique SMBIOS identifiers before connect
 | FeatureUnlock.kext        | Adds Sidecar, AirPlay, and Night Shift support                                                                         |
 | RealtekRTL8111.kext       | Open-source macOS driver for Realtek RTL8111/8168 family Gigabit LAN                                                   |
 | BlueToolFixup.kext        | Bluetooth stack fixup for modern macOS releases                                                                        |
-| RTLBluetoothFirmware.kext | Realtek Bluetooth firmware uploader                                                                                    |
+| RTLBluetoothFirmware.kext | Realtek Bluetooth firmware uploader for Realtek USB dongles (RTL8761B / RTL8761BU / RTL8852B)                          |
 | HibernationFixup.kext     | Resolves sleep and hibernation issues                                                                                  |
 | USBToolBox.kext           | USB mapping companion kext                                                                                             |
 | UTBMap.kext               | Custom USB port map for ASUS B85M-G                                                                                    |
@@ -105,6 +119,7 @@ Remember to generate and configure your unique SMBIOS identifiers before connect
 - [Apple](https://www.apple.com) for macOS.
 - [Acidanthera](https://github.com/acidanthera) for OpenCorePkg and essential kexts.
 - [ChefKissInc](https://github.com/ChefKissInc) for NootRX.
+- [zhen-zen](https://github.com/zhen-zen) for RTLBluetoothFirmware.
 - [USBToolBox](https://github.com/USBToolBox) for USB mapping utilities.
 - [Dortania](https://dortania.github.io/) for comprehensive Hackintosh guides.
 - And everyone in the hackintosh community who contributed to open-source drivers and tools.
