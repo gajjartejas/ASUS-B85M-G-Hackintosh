@@ -1,23 +1,40 @@
 #!/bin/bash
 
-# Extract OpenCore EFI folder without sensitive serial numbers, UUIDs, or MLB keys.
+# Extract OpenCore EFI folder with standard EFI/ (OC & BOOT) structure,
+# without sensitive serial numbers, UUIDs, or MLB keys.
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${SCRIPT_DIR}"
-TEMP_OC_DIR="${OUTPUT_DIR}/OC"
+TEMP_DIR="${OUTPUT_DIR}/_tmp_efi_extract"
+TEMP_EFI_DIR="${TEMP_DIR}/EFI"
+TEMP_OC_DIR="${TEMP_EFI_DIR}/OC"
+TEMP_BOOT_DIR="${TEMP_EFI_DIR}/BOOT"
 
 INPUT_SOURCE="${1:-}"
 CUSTOM_EFI_PATH="${2:-}"
 
-# Clean up any leftover temporary folder
-rm -rf "${TEMP_OC_DIR}"
+# Clean up temporary folders
+rm -rf "${TEMP_DIR}"
+mkdir -p "${TEMP_OC_DIR}" "${TEMP_BOOT_DIR}"
+
+SOURCE_OC_DIR=""
+SOURCE_BOOT_DIR=""
 
 if [ -n "${INPUT_SOURCE}" ] && [ -d "${INPUT_SOURCE}" ]; then
-  # Direct directory path passed (e.g., /path/to/OC or /Volumes/EFI/EFI/OC)
-  echo "Extracting from directory: ${INPUT_SOURCE}"
-  cp -R "${INPUT_SOURCE}" "${TEMP_OC_DIR}"
+  if [ -d "${INPUT_SOURCE}/OC" ]; then
+    # Given path is an EFI folder containing OC/
+    SOURCE_OC_DIR="${INPUT_SOURCE}/OC"
+    [ -d "${INPUT_SOURCE}/BOOT" ] && SOURCE_BOOT_DIR="${INPUT_SOURCE}/BOOT"
+  elif [ -f "${INPUT_SOURCE}/config.plist" ] || [ -f "${INPUT_SOURCE}/OpenCore.efi" ]; then
+    # Given path is directly the OC folder
+    SOURCE_OC_DIR="${INPUT_SOURCE}"
+    PARENT_DIR="$(dirname "${INPUT_SOURCE}")"
+    [ -d "${PARENT_DIR}/BOOT" ] && SOURCE_BOOT_DIR="${PARENT_DIR}/BOOT"
+  else
+    SOURCE_OC_DIR="${INPUT_SOURCE}"
+  fi
 
 elif [ -n "${INPUT_SOURCE}" ] && [[ "${INPUT_SOURCE}" =~ ^(/dev/)?disk[0-9]+s[0-9]+ ]]; then
   # Disk partition identifier passed (e.g., /dev/disk0s1 or disk0s1)
@@ -30,34 +47,56 @@ elif [ -n "${INPUT_SOURCE}" ] && [[ "${INPUT_SOURCE}" =~ ^(/dev/)?disk[0-9]+s[0-
   fi
 
   if [ -n "${CUSTOM_EFI_PATH}" ] && [ -d "${CUSTOM_EFI_PATH}" ]; then
-    cp -R "${CUSTOM_EFI_PATH}" "${TEMP_OC_DIR}"
+    SOURCE_OC_DIR="${CUSTOM_EFI_PATH}"
   elif [ -d "/Volumes/EFI/EFI/OC" ]; then
-    cp -R "/Volumes/EFI/EFI/OC" "${TEMP_OC_DIR}"
+    SOURCE_OC_DIR="/Volumes/EFI/EFI/OC"
+    [ -d "/Volumes/EFI/EFI/BOOT" ] && SOURCE_BOOT_DIR="/Volumes/EFI/EFI/BOOT"
   elif [ -d "/Volumes/ESP/EFI/OC" ]; then
-    cp -R "/Volumes/ESP/EFI/OC" "${TEMP_OC_DIR}"
+    SOURCE_OC_DIR="/Volumes/ESP/EFI/OC"
+    [ -d "/Volumes/ESP/EFI/BOOT" ] && SOURCE_BOOT_DIR="/Volumes/ESP/EFI/BOOT"
   else
     echo "Error: OpenCore directory (EFI/OC) not found on mounted EFI volume."
+    rm -rf "${TEMP_DIR}"
     exit 1
   fi
 
 elif [ -z "${INPUT_SOURCE}" ]; then
   # Auto-detection from already mounted EFI volume
   if [ -d "/Volumes/EFI/EFI/OC" ]; then
-    echo "Found mounted EFI at /Volumes/EFI/EFI/OC"
-    cp -R "/Volumes/EFI/EFI/OC" "${TEMP_OC_DIR}"
+    SOURCE_OC_DIR="/Volumes/EFI/EFI/OC"
+    [ -d "/Volumes/EFI/EFI/BOOT" ] && SOURCE_BOOT_DIR="/Volumes/EFI/EFI/BOOT"
   elif [ -d "/Volumes/ESP/EFI/OC" ]; then
-    echo "Found mounted EFI at /Volumes/ESP/EFI/OC"
-    cp -R "/Volumes/ESP/EFI/OC" "${TEMP_OC_DIR}"
+    SOURCE_OC_DIR="/Volumes/ESP/EFI/OC"
+    [ -d "/Volumes/ESP/EFI/BOOT" ] && SOURCE_BOOT_DIR="/Volumes/ESP/EFI/BOOT"
   else
     echo "Usage:"
     echo "  $0 /path/to/OC"
-    echo "  $0 /dev/disk0s1 [/Volumes/EFI/EFI/OC]"
+    echo "  $0 /path/to/EFI"
+    echo "  $0 /dev/disk0s1"
     echo "  $0 (if EFI is already mounted at /Volumes/EFI)"
+    rm -rf "${TEMP_DIR}"
     exit 1
   fi
 else
   echo "Invalid argument: ${INPUT_SOURCE}"
+  rm -rf "${TEMP_DIR}"
   exit 1
+fi
+
+echo "Copying OpenCore files from: ${SOURCE_OC_DIR}"
+cp -R "${SOURCE_OC_DIR}/"* "${TEMP_OC_DIR}/"
+
+if [ -n "${SOURCE_BOOT_DIR}" ] && [ -d "${SOURCE_BOOT_DIR}" ]; then
+  echo "Copying BOOT files from: ${SOURCE_BOOT_DIR}"
+  cp -R "${SOURCE_BOOT_DIR}/"* "${TEMP_BOOT_DIR}/"
+else
+  # Ensure standard OpenCore BOOT folder exists
+  echo "Creating standard BOOT folder with OpenCore bootstrap..."
+  if [ -f "/tmp/oc_107/X64/EFI/BOOT/BOOTx64.efi" ]; then
+    cp -R /tmp/oc_107/X64/EFI/BOOT/* "${TEMP_BOOT_DIR}/"
+  elif [ -f "${TEMP_OC_DIR}/OpenCore.efi" ]; then
+    cp "${TEMP_OC_DIR}/OpenCore.efi" "${TEMP_BOOT_DIR}/BOOTx64.efi"
+  fi
 fi
 
 CONFIG_PLIST="${TEMP_OC_DIR}/config.plist"
@@ -98,9 +137,11 @@ if [ -z "${Version}" ]; then
 fi
 
 ZIP_FILE="${OUTPUT_DIR}/OC_${Version}.zip"
-echo "Creating archive: ${ZIP_FILE}"
-ditto -c -k --sequesterRsrc --keepParent "${TEMP_OC_DIR}" "${ZIP_FILE}"
-rm -rf "${TEMP_OC_DIR}"
+rm -f "${ZIP_FILE}"
+
+echo "Creating archive with EFI/ (OC and BOOT) folder structure: ${ZIP_FILE}"
+(cd "${TEMP_DIR}" && zip -r -q -X "${ZIP_FILE}" EFI)
+rm -rf "${TEMP_DIR}"
 
 echo "Done! Generated: ${ZIP_FILE}"
 exit 0
