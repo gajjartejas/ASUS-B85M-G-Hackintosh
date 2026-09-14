@@ -21,7 +21,7 @@ diskutil list
 ```
 
 3. **Auto-Detection**:
-If no argument is passed, the script checks `/Volumes/EFI/EFI/OC` or `../OC`.
+If no argument is passed, the script checks mounted EFI volumes at `/Volumes/EFI/EFI/OC` or `/Volumes/ESP/EFI/OC`.
 ```bash
 ./Tools/extract_efi_without_serial.sh
 ```
