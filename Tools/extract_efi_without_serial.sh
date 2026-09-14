@@ -9,33 +9,50 @@ OUTPUT_DIR="${SCRIPT_DIR}"
 TEMP_OC_DIR="${OUTPUT_DIR}/OC"
 
 INPUT_SOURCE="${1:-}"
+CUSTOM_EFI_PATH="${2:-}"
 
 # Clean up any leftover temporary folder
 rm -rf "${TEMP_OC_DIR}"
 
-if [ -z "${INPUT_SOURCE}" ]; then
-  if [ -d "/Volumes/EFI/EFI/OC" ]; then
-    echo "Found EFI at /Volumes/EFI/EFI/OC"
-    cp -R "/Volumes/EFI/EFI/OC" "${TEMP_OC_DIR}"
-  elif [ -d "${SCRIPT_DIR}/../../OC" ]; then
-    echo "Found OC directory at ${SCRIPT_DIR}/../../OC"
-    cp -R "${SCRIPT_DIR}/../../OC" "${TEMP_OC_DIR}"
-  else
-    echo "Usage: $0 [/dev/diskXsY | /path/to/OC | /Volumes/EFI/EFI/OC]"
-    exit 1
-  fi
-elif [ -d "${INPUT_SOURCE}" ]; then
-  echo "Copying from directory: ${INPUT_SOURCE}"
+if [ -n "${INPUT_SOURCE}" ] && [ -d "${INPUT_SOURCE}" ]; then
+  # Direct directory path passed (e.g., /path/to/OC or /Volumes/EFI/EFI/OC)
+  echo "Extracting from directory: ${INPUT_SOURCE}"
   cp -R "${INPUT_SOURCE}" "${TEMP_OC_DIR}"
-elif [[ "${INPUT_SOURCE}" =~ ^/dev/disk ]]; then
-  echo "Mounting EFI partition: ${INPUT_SOURCE}"
-  sudo diskutil mount "${INPUT_SOURCE}"
-  if [ -d "/Volumes/EFI/EFI/OC" ]; then
+
+elif [ -n "${INPUT_SOURCE}" ] && [[ "${INPUT_SOURCE}" =~ ^(/dev/)?disk[0-9]+s[0-9]+ ]]; then
+  # Disk partition identifier passed (e.g., /dev/disk0s1 or disk0s1)
+  DEVICE="${INPUT_SOURCE}"
+  [[ "${DEVICE}" != /dev/* ]] && DEVICE="/dev/${DEVICE}"
+
+  echo "Mounting EFI partition: ${DEVICE}"
+  if ! diskutil mount "${DEVICE}" 2>/dev/null; then
+    sudo diskutil mount "${DEVICE}"
+  fi
+
+  if [ -n "${CUSTOM_EFI_PATH}" ] && [ -d "${CUSTOM_EFI_PATH}" ]; then
+    cp -R "${CUSTOM_EFI_PATH}" "${TEMP_OC_DIR}"
+  elif [ -d "/Volumes/EFI/EFI/OC" ]; then
     cp -R "/Volumes/EFI/EFI/OC" "${TEMP_OC_DIR}"
   elif [ -d "/Volumes/ESP/EFI/OC" ]; then
     cp -R "/Volumes/ESP/EFI/OC" "${TEMP_OC_DIR}"
   else
-    echo "Error: OpenCore directory not found on mounted EFI volume."
+    echo "Error: OpenCore directory (EFI/OC) not found on mounted EFI volume."
+    exit 1
+  fi
+
+elif [ -z "${INPUT_SOURCE}" ]; then
+  # Auto-detection from already mounted EFI volume
+  if [ -d "/Volumes/EFI/EFI/OC" ]; then
+    echo "Found mounted EFI at /Volumes/EFI/EFI/OC"
+    cp -R "/Volumes/EFI/EFI/OC" "${TEMP_OC_DIR}"
+  elif [ -d "/Volumes/ESP/EFI/OC" ]; then
+    echo "Found mounted EFI at /Volumes/ESP/EFI/OC"
+    cp -R "/Volumes/ESP/EFI/OC" "${TEMP_OC_DIR}"
+  else
+    echo "Usage:"
+    echo "  $0 /path/to/OC"
+    echo "  $0 /dev/disk0s1 [/Volumes/EFI/EFI/OC]"
+    echo "  $0 (if EFI is already mounted at /Volumes/EFI)"
     exit 1
   fi
 else
@@ -48,7 +65,6 @@ CONFIG_PLIST="${TEMP_OC_DIR}/config.plist"
 if [ -f "${CONFIG_PLIST}" ]; then
   echo "Sanitizing serial numbers and hardware identifiers..."
 
-  # Helper function to replace plist values if key exists
   sanitize_key() {
     local key_path="$1"
     local dummy_val="$2"
